@@ -1,27 +1,34 @@
 This is Perl module App::AutoInstaller.
 
-INSTALLATION
+NAME
 
-App::AutoInstaller installation is straightforward. If your CPAN shell is set up,
-you should just be able to do
+    App::AutoInstaller - Install the needed modules in the script. A convinient script for perlbrew + cpanminus + cpan-outdated.
 
-    % cpan App::AutoInstaller
+SYNOPSIS
 
-Download it, unpack it, then build it as per the usual:
+    $ wget http://j.mp/cpan-auto http://j.mp/auto-script-pl
+    $ chmod +x ./cpan-auto
+    $ cat auto-script-pl        ### auto-script-pl is a perl script!
+    $ sudo ./cpan-auto auto-script-pl
 
-    % perl Makefile.PL
-    % make && make test
+DESCRIPTION
 
-Then install it:
+    App::AutoInstaller is a convinient script for perlbrew + cpanminus + cpan-outdated.
 
-    % make install
+    I am one of the perlbrew user. perlbrew is awersome but I am disgusted by installing modules what I ALL need in each perl.
+    In addition, I think that keeping modules fresh is good thing, I implemented cpan-outdated feature.
 
-DOCUMENTATION
+AUTHOR
 
-App::AutoInstaller documentation is available as in POD. So you can do:
+    punytan punytan@gmail.com
 
-    % perldoc App::AutoInstaller
+SEE ALSO
 
-to read the documentation online with your favorite pager.
+    App::perlbrew, App::cpanminus, App::cpanoutdated
+
+LICENSE
+
+    This library is free software; you can redistribute it and/or modify
+    it under the same terms as Perl itself.
 
 punytan
