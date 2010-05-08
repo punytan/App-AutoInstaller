@@ -1,0 +1,109 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use File::Spec;
+use Module::CoreList;
+use Config;
+use Data::Dumper;
+
+our $VERSION = '0.01';
+
+die 'not supported' if $^O eq 'MSWin32';
+
+our $APP = {
+    wget     => which('wget'),
+    cpanm    => which('cpanm'),
+    outdated => which('cpan-outdated'),
+};
+
+our $OPT = {
+#    cpanm_sudo => undef,
+    cpanm_arg  => '',
+};
+
+main();
+
+exit;
+
+sub main {
+    init();
+
+    require Module::ExtractUse;
+    my $script = shift @ARGV;
+
+    die "Specify the script!" unless $script;
+
+    my $p = Module::ExtractUse->new;
+    $p->extract_use($script);
+
+    run_cpanm($p->array);
+    run_outdated();
+}
+
+sub init {
+    die 'Cannot find wget.' unless ($APP->{wget});
+    print "wget: $APP->{wget}\n";
+
+    get_cpanm() unless ($APP->{cpanm});
+    print "App::cpanminus: $APP->{cpanm}\n";
+
+    print "Do you want to append cpanminus options to install modules? Empty is recommended.\n\tCommand line options: ";
+    my $op = <STDIN>; chomp $op;
+    $OPT->{cpanm_arg} = $op;
+
+    run_cpanm('App::cpanoutdated') unless ($APP->{outdated});
+    $APP->{outdated} = which('cpan-outdated');
+    print "App::cpanoutdated: $APP->{outdated}\n";
+
+    run_cpanm('Module::ExtractUse') unless (eval {require Module::ExtractUse;});
+}
+
+sub run_outdated {
+    my @cmd = ("$APP->{outdated} | $APP->{cpanm}");
+
+    print "\n\t# All old modules will be upgraded. This process takes time. #\n\n"
+    system(@cmd) eq '0' ? print "\n\nSuccess\n" : die "Oh, error...";
+}
+
+sub run_cpanm {
+    my @modules = @_;
+
+    print "Modules listed below (and dependencies) are planned to install.\n", join("\t\n", @modules);
+
+    my @cmd = ($APP->{cpanm}, @modules, $OPT->{cpanm_arg});
+
+    system(@cmd) eq '0' ? print "\n\nSuccess\n" : die "Oh, error...";
+}
+
+sub get_cpanm {
+    my @cmd = ($APP->{wget}, 'http://xrl.us/cpanm');
+
+    print "You don't have cpanminus.\nFetching cpanminus...\n";
+    die 'Cannot download cpanminus.' if system(@cmd) ne '0';
+    die 'Permission denied.' unless chmod(0755, './cpanm');
+
+    $APP->{cpanm} = './cpanm';
+}
+
+# taken from cpan-outdated++
+sub which {
+    my($name) = @_;
+    my $exe_ext = $Config{_exe};
+
+    my $quote = q/'/;
+    foreach my $dir(File::Spec->path){
+        my $fullpath = File::Spec->catfile($dir, $name);
+        if (-x $fullpath || -x ($fullpath .= $exe_ext)){
+            if ($fullpath =~ /\s/ && $fullpath !~ /^$quote/) {
+                $fullpath = "$quote$fullpath$quote"
+            }
+            return $fullpath;
+        }
+    }
+    return undef;
+}
+
+__END__
+
+=cut
