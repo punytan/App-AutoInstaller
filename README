@@ -6,10 +6,10 @@ NAME
 
 SYNOPSIS
 
-    $ wget http://j.mp/cpan-auto http://j.mp/auto-script-pl
+    $ wget http://tinyurl.com/cpan-auto http://tinyurl.com/auto-script-pl
     $ chmod +x ./cpan-auto
-    $ cat auto-script-pl        ### auto-script-pl is a perl script!
-    $ sudo ./cpan-auto auto-script-pl
+    $ cat script.pl        ### auto-script-pl is script.pl
+    $ sudo ./cpan-auto script.pl
 
 DESCRIPTION
 
