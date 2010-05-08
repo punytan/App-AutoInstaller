@@ -26,6 +26,10 @@ SEE ALSO
 
     App::perlbrew, App::cpanminus, App::cpanoutdated
 
+NOTE
+
+    This is alpha-quality script. All patches/comment/advice are welcomed.
+
 LICENSE
 
     This library is free software; you can redistribute it and/or modify
