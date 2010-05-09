@@ -9,7 +9,7 @@ SYNOPSIS
     $ wget http://tinyurl.com/cpan-auto http://tinyurl.com/auto-script-pl
     $ chmod +x ./cpan-auto
     $ cat script.pl        ### auto-script-pl is script.pl
-    $ sudo ./cpan-auto script.pl
+    $ ./cpan-auto script.pl
 
 DESCRIPTION
 
