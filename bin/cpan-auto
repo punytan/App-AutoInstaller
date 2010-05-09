@@ -69,7 +69,7 @@ sub run_outdated {
 sub run_cpanm {
     my @modules = @_;
 
-    print "Modules listed below (and dependencies) are planned to install.\n", join("\n\t", @modules);
+    print "Modules listed below (and dependencies) are planned to install.\n\t* ", join("\n\t* ", @modules), "\n\n";
 
     my @cmd = ($APP->{cpanm}, @modules, $OPT->{cpanm_arg});
 
