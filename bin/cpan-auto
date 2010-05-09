@@ -81,7 +81,7 @@ sub diff {
 }
 
 sub get_cpanm {
-    my @cmd = ($APP->{wget}, 'http://cpanmin.us/', '-O', '-', '|', 'perl', '-', 'App::cpanminus');
+    my @cmd = ("$APP->{wget} http://cpanmin.us/ -O - | perl - App::cpanminus");
 
     die 'Cannot install cpanminus.' if system(@cmd) ne '0';
 
