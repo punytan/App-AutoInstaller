@@ -37,7 +37,8 @@ sub main {
     my $p = Module::ExtractUse->new;
     $p->extract_use($script);
 
-    run_cpanm($p->array);
+    my @required = diff($p->array);
+    run_cpanm(@required);
     run_outdated();
 }
 
@@ -57,6 +58,7 @@ sub init {
     print "App::cpanoutdated: $APP->{outdated}\n";
 
     run_cpanm('Module::ExtractUse') unless (eval {require Module::ExtractUse;});
+    run_cpanm('List::MoreUtils') unless (eval {require List::MoreUtils;});
 }
 
 sub run_outdated {
@@ -71,9 +73,20 @@ sub run_cpanm {
 
     print "Modules listed below (and dependencies) are planned to install.\n\t* ", join("\n\t* ", @modules), "\n\n";
 
-    my @cmd = ($APP->{cpanm}, @modules, $OPT->{cpanm_arg});
+    my @cmd = ($APP->{cpanm}, @modules);
+    push @cmd, $OPT->{cpanm_arg} if $OPT->{cpanm_arg};
 
     system(@cmd) eq '0' ? print "\n\nSuccess\n" : die "Oh, error...";
+}
+
+sub diff {
+    my @used = @_;
+
+    require List::MoreUtils;
+    my @required;
+    push( @required, (grep { !$Module::CoreList::version{"$]"}->{$_}  } List::MoreUtils::uniq( sort @used )));
+
+    return @required;
 }
 
 sub get_cpanm {
