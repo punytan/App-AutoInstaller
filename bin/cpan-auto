@@ -65,10 +65,11 @@ sub run_cpanm {
 
     print "Modules listed below (and dependencies) are planned to install.\n\t* ", join("\n\t* ", @modules), "\n\n";
 
+    my $separator = '=' x 30;
     for my $module (@modules) {
         my @cmd = ($APP->{cpanm}, $module, @CPANM_OPT);
-        print "\n\n\t** $module **\n\n";
-        system(@cmd) eq '0' ? print "\n\nSuccess\n\n" : die "\n\nOh, error... Retry !\n\n";
+        print "$separator\n\t** $module **\n$separator\n";
+        system(@cmd) eq '0' ? print "Success\n\n" : die "Oh, error... Retry !\n\n";
     }
 }
 
