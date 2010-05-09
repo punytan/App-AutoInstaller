@@ -73,7 +73,7 @@ sub run_cpanm {
 
     print "Modules listed below (and dependencies) are planned to install.\n\t* ", join("\n\t* ", @modules), "\n\n";
 
-    my @cmd = ($APP->{cpanm}, @modules);
+    my @cmd = ($APP->{cpanm}, @modules, '--skip-installed');
     push @cmd, $OPT->{cpanm_arg} if $OPT->{cpanm_arg};
 
     system(@cmd) eq '0' ? print "\n\nSuccess\n" : die "Oh, error...";
