@@ -54,10 +54,9 @@ sub init {
 }
 
 sub run_outdated {
-    my @cmd = ("$APP->{outdated} | $APP->{cpanm}");
-
     print "\n\t# All old modules will be upgraded. This process takes time. #\n\n";
-    system(@cmd) eq '0' ? print "\n\nSuccess\n" : die "Oh, error...";
+    my @modules = `cpan-outdated` if $APP->{outdated};
+    run_cpanm(@modules) if scalar @modules;
 }
 
 sub run_cpanm {
