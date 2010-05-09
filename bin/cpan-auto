@@ -13,14 +13,11 @@ die 'not supported' if $^O eq 'MSWin32';
 
 our $APP = {
     wget     => which('wget'),
-    cpanm    => which('cpanm'),
+    cpanm    => undef,
     outdated => which('cpan-outdated'),
 };
 
-our $OPT = {
-#    cpanm_sudo => undef,
-    cpanm_arg  => '',
-};
+our @CPANM_OPT = qw/--skip-installed --prompt/;
 
 main();
 
@@ -29,15 +26,14 @@ exit;
 sub main {
     init();
 
+    my $script = shift @ARGV or die "Specify the script!";
+
     require Module::ExtractUse;
-    my $script = shift @ARGV;
-
-    die "Specify the script!" unless $script;
-
     my $p = Module::ExtractUse->new;
     $p->extract_use($script);
 
     my @required = diff($p->array);
+
     run_cpanm(@required);
     run_outdated();
 }
@@ -46,12 +42,8 @@ sub init {
     die 'Cannot find wget.' unless ($APP->{wget});
     print "wget: $APP->{wget}\n";
 
-    get_cpanm() unless ($APP->{cpanm});
+    get_cpanm();
     print "App::cpanminus: $APP->{cpanm}\n";
-
-    print "Do you want to append cpanminus options to install modules? Empty is recommended.\n\tCommand line options: ";
-    my $op = <STDIN>; chomp $op;
-    $OPT->{cpanm_arg} = $op;
 
     run_cpanm('App::cpanoutdated') unless ($APP->{outdated});
     $APP->{outdated} = which('cpan-outdated');
@@ -73,8 +65,7 @@ sub run_cpanm {
 
     print "Modules listed below (and dependencies) are planned to install.\n\t* ", join("\n\t* ", @modules), "\n\n";
 
-    my @cmd = ($APP->{cpanm}, @modules, '--skip-installed');
-    push @cmd, $OPT->{cpanm_arg} if $OPT->{cpanm_arg};
+    my @cmd = ($APP->{cpanm}, @modules, @CPANM_OPT);
 
     system(@cmd) eq '0' ? print "\n\nSuccess\n" : die "Oh, error...";
 }
@@ -90,13 +81,11 @@ sub diff {
 }
 
 sub get_cpanm {
-    my @cmd = ($APP->{wget}, 'http://xrl.us/cpanm');
+    my @cmd = ($APP->{wget}, 'http://cpanmin.us/', '-O', '-', '|', 'perl', '-', 'App::cpanminus');
 
-    print "You don't have cpanminus.\nFetching cpanminus...\n";
-    die 'Cannot download cpanminus.' if system(@cmd) ne '0';
-    die 'Permission denied.' unless chmod(0755, './cpanm');
+    die 'Cannot install cpanminus.' if system(@cmd) ne '0';
 
-    $APP->{cpanm} = './cpanm';
+    $APP->{cpanm} = which('cpanm');
 }
 
 # taken from cpan-outdated++
