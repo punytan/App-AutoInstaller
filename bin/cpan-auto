@@ -54,8 +54,9 @@ sub init {
 }
 
 sub run_outdated {
-    print "\n\t# All old modules will be upgraded. This process takes time. #\n\n";
+    print "### All old modules will be upgraded. This process takes time. \n\n";
     my @modules = `cpan-outdated` if $APP->{outdated};
+    chomp $_ for (@modules);
     run_cpanm(@modules) if scalar @modules;
 }
 
@@ -64,7 +65,7 @@ sub run_cpanm {
 
     print "Modules listed below (and dependencies) are planned to install.\n\t* ", join("\n\t* ", @modules), "\n\n";
 
-    my $separator = '=' x 30;
+    my $separator = '=' x 50;
     for my $module (@modules) {
         my @cmd = ($APP->{cpanm}, $module, @CPANM_OPT);
         print "$separator\n\t** $module **\n$separator\n";
