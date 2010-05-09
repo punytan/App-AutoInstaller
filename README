@@ -15,7 +15,7 @@ DESCRIPTION
 
     App::AutoInstaller is a convinient script for perlbrew + cpanminus + cpan-outdated.
 
-    I am one of the perlbrew user. perlbrew is awersome but I am disgusted by installing modules what I ALL need in each perl.
+    I am one of the perlbrew user. perlbrew is awesome but I am disgusted by installing modules what I ALL need in each perl.
     In addition, I think that keeping modules fresh is good thing, I implemented cpan-outdated feature.
 
 AUTHOR
